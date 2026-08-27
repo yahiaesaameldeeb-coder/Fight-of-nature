@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="screen-orientation" content="landscape">
+<meta name="orientation" content="landscape">
+<title>معركة الطبيعة — The Fight of Nature</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="fxCanvas" aria-hidden="true"></canvas>
+<div id="landscape-lock"><div class="rotate-phone">⟳</div><strong>أدر الجهاز للوضع الأفقي</strong><span>THE FIGHT OF NATURE</span></div>
+<div id="intro-overlay">
+  <div class="intro-logo">معركة الطبيعة</div>
+  <div class="intro-sub">NATURE BATTLE RPG</div>
+  <div class="intro-line"></div>
+  <div class="intro-credit" id="credit-1">CREATED BY <span class="highlight">YAHYA</span></div>
+  <div class="intro-credit" id="credit-2">WRITTEN BY <span class="highlight">YAHYA</span></div>
+  <div class="intro-credit" id="credit-3">WEBSITE BY <span class="highlight">YAHYA</span></div>
+  <div class="intro-credit" id="credit-4" style="font-size:12px;color:var(--dim);">اضغط أي مفتاح للبدء</div>
+</div>
+
+
+
+
+<div class="hud-layer" id="hud">
+  <div class="hud-top">
+    <div class="hud-panel">
+      <div class="hud-name" id="hud-name">Hero</div>
+      <div class="hud-lvl">LVL <span id="hud-lvl">1</span> | Rank <span id="hud-rank">A</span> | <span id="hud-elem">Fire</span></div>
+      <div class="hud-bar-bg"><div class="hud-bar-fill hud-hp" id="hud-hp" style="width:100%"></div></div>
+      <div class="hud-bar-bg"><div class="hud-bar-fill hud-mp" id="hud-mp" style="width:100%"></div></div>
+      <div class="hud-bar-bg"><div class="hud-bar-fill hud-xp" id="hud-xp" style="width:0%"></div></div>
+    </div>
+    <div class="hud-mode">
+      <div class="hud-mode-title" id="hud-mode">🌍 Open World</div>
+      <div class="hud-mode-sub" id="hud-mission">Explore the world</div>
+    </div>
+  </div>
+  <div class="dialogue-box" id="dialogue">
+    <div class="dialogue-name" id="dlg-name">Name</div>
+    <div class="dialogue-text" id="dlg-text">Dialogue text...</div>
+    <div class="dialogue-choices" id="dlg-choices"></div>
+  </div>
+  <div style="position:absolute;bottom:24px;right:24px;display:flex;gap:10px;pointer-events:auto;" id="desktop-actions">
+    <button class="menu-btn" style="width:52px;height:52px;padding:0;border-radius:50%;font-size:20px;" onclick="GAME.toggleMenu()">⚙</button>
+    <button class="menu-btn" style="width:52px;height:52px;padding:0;border-radius:50%;font-size:20px;" onclick="GAME.toggleMap()">🗺</button>
+    <button class="menu-btn" style="width:52px;height:52px;padding:0;border-radius:50%;font-size:20px;" onclick="GAME.interact()">💬</button>
+  </div>
+  <div class="mobile-controls" id="mobile-dpad">
+    <div style="grid-column:2;grid-row:1;"><button class="mobile-btn" data-key="up" id="mb-up">▲</button></div>
+    <div style="grid-column:1;grid-row:2;"><button class="mobile-btn" data-key="left" id="mb-left">◀</button></div>
+    <div style="grid-column:2;grid-row:2;"><button class="mobile-btn" data-key="act" id="mb-act">⚔</button></div>
+    <div style="grid-column:3;grid-row:2;"><button class="mobile-btn" data-key="right" id="mb-right">▶</button></div>
+    <div style="grid-column:2;grid-row:3;"><button class="mobile-btn" data-key="down" id="mb-down">▼</button></div>
+  </div>
+  <div class="mobile-actions" id="mobile-actions">
+    <button class="mobile-act-btn" onclick="GAME.toggleMenu()">⚙</button>
+    <button class="mobile-act-btn" onclick="GAME.interact()">💬</button>
+  </div>
+</div>
+
+<div class="notif" id="notif">Notification!</div>
+
+<div id="scr-title" class="screen active title-screen">
+  <div class="title-glow"></div>
+  <div style="font-size:90px;margin-bottom:6px;position:relative;z-index:2;">🎮</div>
+  <h1 class="game-title">معركة الطبيعة</h1>
+  <p class="game-subtitle">معركة الطبيعة — 100 بطل — اكتب مصيرك</p>
+  <p class="version-tag">الإصدار 5.0 ULTRA • LANDSCAPE EDITION</p>
+  <div class="premium-badges"><span>⚡ 60 FPS</span><span>🎮 TOUCH + KEYBOARD</span><span>💾 AUTO SAVE</span></div>
+  <button class="menu-btn primary" onclick="GAME.toCreator()">🚀 Start Adventure</button>
+  <button class="menu-btn" onclick="GAME.toStoryMode()">📖 Story Mode</button>
+  <button class="menu-btn" onclick="GAME.toBattleMode()">⚔️ Battle Mode</button>
+  <button class="menu-btn gold" onclick="GAME.toTournamentMode()">🏆 Tournament Mode</button>
+  <button class="menu-btn secondary" onclick="GAME.toCharacterList()">👥 Hero List (100+)</button>
+  <button class="menu-btn" onclick="GAME.toSettings()">⚙️ Settings</button>
+  <button class="menu-btn" onclick="GAME.toCredits()">📜 Credits</button>
+</div>
+
+<div id="scr-creator" class="screen">
+  <div class="creator-box">
+    <div class="creator-title">🎨 Create Your Hero</div>
+    <div class="input-group"><label>Name</label><input type="text" id="char-name" placeholder="Enter hero name..." maxlength="12" value="Yahya"></div>
+    <div class="input-group"><label>Hair Color</label><div class="color-picker" id="hair-colors"></div></div>
+    <div class="input-group"><label>Clothing Color</label><div class="color-picker" id="cloth-colors"></div></div>
+    <div class="input-group"><label>Skin Tone</label><div class="color-picker" id="skin-colors"></div></div>
+    <div class="input-group"><label>Element</label><select id="char-element">
+      <option value="نار">🔥 Fire</option><option value="جليد">❄️ Ice</option><option value="رياح">💨 Wind</option>
+      <option value="ماء">💧 Water</option><option value="ضوء">✨ Light</option><option value="ظلام">🌑 Darkness</option>
+      <option value="رعد">⚡ Thunder</option><option value="تحول">🐺 Transform</option>
+    </select></div>
+    <div class="stat-preview" id="stat-preview"><span>⚔️ ATK: 16</span><span>🛡️ DEF: 8</span><span>⚡ SPD: 12</span></div>
+    <canvas id="preview-canvas" width="140" height="180" style="width:140px;height:180px;margin:14px auto;border-radius:14px;background:rgba(0,0,0,0.3);border:1px solid var(--border);display:block;"></canvas>
+    <button class="menu-btn primary" onclick="GAME.createCharacter()" style="width:100%;">✨ Start Game</button>
+    <button class="menu-btn" onclick="GAME.toMenu()" style="width:100%;">← Back</button>
+  </div>
+</div>
+
+<div id="scr-pause" class="screen">
+  <h2 style="font-size:36px;margin-bottom:30px;font-family:'Orbitron',sans-serif;">⏸️ PAUSED</h2>
+  <button class="menu-btn primary" onclick="GAME.resume()">▶️ Resume</button>
+  <button class="menu-btn" onclick="GAME.toStoryMode()">📖 Story Mode</button>
+  <button class="menu-btn" onclick="GAME.toBattleMode()">⚔️ Battle Mode</button>
+  <button class="menu-btn gold" onclick="GAME.toTournamentMode()">🏆 Tournament Mode</button>
+  <button class="menu-btn" onclick="GAME.toCharacterList()">👥 Hero List</button>
+  <button class="menu-btn secondary" onclick="GAME.toInventory()">🎒 Inventory</button>
+  <button class="menu-btn green" onclick="GAME.saveGame()">💾 Save</button>
+  <button class="menu-btn" onclick="GAME.toMenu()" style="color:var(--fire);">🚪 Exit</button>
+</div>
+
+<div id="scr-battle" class="battle-screen">
+  <div class="battle-backdrop"><div class="battle-sun"></div><div class="battle-mist mist-a"></div><div class="battle-mist mist-b"></div><div class="battle-ground"></div></div>
+  <div class="battle-arena">
+    <div class="battle-char">
+      <canvas class="battle-char-canvas" id="battle-p-canvas" width="160" height="200"></canvas>
+      <div class="battle-char-name" id="battle-p-name">Hero</div>
+      <div class="battle-char-hp"><div class="battle-char-hp-fill" id="battle-p-hp" style="width:100%;background:linear-gradient(90deg,#39ff14,#2ecc71);"></div></div>
+      <div style="font-size:11px;color:var(--sec);" id="battle-p-stats">HP: 100/100 | MP: 50</div>
+    </div>
+    <div class="battle-vs">VS</div>
+    <div class="battle-char">
+      <canvas class="battle-char-canvas" id="battle-e-canvas" width="160" height="200"></canvas>
+      <div class="battle-char-name" id="battle-e-name">Enemy</div>
+      <div class="battle-char-hp"><div class="battle-char-hp-fill" id="battle-e-hp" style="width:100%;background:linear-gradient(90deg,#ff2a6d,#ff6b35);"></div></div>
+      <div style="font-size:11px;color:var(--sec);" id="battle-e-stats">HP: 100/100</div>
+    </div>
+  </div>
+  <div class="battle-actions">
+    <button class="battle-action-btn" id="btn-atk" onclick="BATTLE.attack()">⚔️ Attack</button>
+    <button class="battle-action-btn" id="btn-spc" onclick="BATTLE.special()">✨ Special</button>
+    <button class="battle-action-btn" id="btn-def" onclick="BATTLE.defend()">🛡️ Defend</button>
+    <button class="battle-action-btn" id="btn-heal" onclick="BATTLE.heal()">💚 Heal</button>
+  </div>
+  <div class="battle-log" id="battle-log"></div>
+</div>
+
+<div id="scr-tournament" class="screen">
+  <h2 style="font-size:30px;color:var(--gold);margin-bottom:8px;font-family:'Orbitron',sans-serif;">🏆 TOURNAMENT</h2>
+  <p style="color:var(--sec);font-size:13px;margin-bottom:20px;">Compete against 7 heroes to win the title</p>
+  <div class="tournament-bracket" id="tournament-bracket"></div>
+  <button class="menu-btn primary" onclick="TOURNAMENT.start()" id="tour-start">🚀 Start Tournament</button>
+  <button class="menu-btn" onclick="GAME.resume()">← Back</button>
+</div>
+
+<div id="scr-story" class="screen">
+  <div class="story-box">
+    <div class="story-chap" id="story-chap">Chapter 1</div>
+    <h2 class="story-title" id="story-title">The Beginning</h2>
+    <p class="story-text" id="story-text">...</p>
+    <canvas id="story-canvas" width="400" height="200" style="width:100%;max-width:400px;height:200px;margin:14px auto;border-radius:14px;background:rgba(0,0,0,0.3);border:1px solid var(--border);display:block;"></canvas>
+    <div id="story-choices" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;"></div>
+    <button class="menu-btn primary" onclick="STORY.next()" id="story-next" style="width:100%;">Next →</button>
+  </div>
+</div>
+
+<div id="scr-charlist" class="screen">
+  <h2 style="font-size:28px;margin-bottom:16px;font-family:'Orbitron',sans-serif;">👥 HERO LIST (100+)</h2>
+  <div class="char-list" id="char-list"></div>
+  <button class="menu-btn" onclick="GAME.toMenu()">← Back</button>
+</div>
+
+<div id="scr-inventory" class="screen">
+  <h2 style="font-size:28px;margin-bottom:16px;font-family:'Orbitron',sans-serif;">🎒 INVENTORY</h2>
+  <div class="inv-grid" id="inv-grid"></div>
+  <button class="menu-btn" onclick="GAME.resume()">← Back</button>
+</div>
+
+<div id="scr-settings" class="screen">
+  <h2 style="font-size:28px;margin-bottom:20px;font-family:'Orbitron',sans-serif;">⚙️ SETTINGS</h2>
+  <div style="width:92%;max-width:420px;margin-bottom:20px;">
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--sec);margin-bottom:6px;">Graphics Quality</label><select id="set-quality" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);font-family:inherit;"><option value="high">High (Recommended)</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--sec);margin-bottom:6px;">Game Speed</label><select id="set-speed" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);font-family:inherit;"><option value="1">Normal</option><option value="1.5">Fast</option><option value="2">Very Fast</option></select></div>
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--sec);margin-bottom:6px;">Mobile Controls</label><select id="set-mobile" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);font-family:inherit;"><option value="auto">Auto (Device Based)</option><option value="on">Always Show</option><option value="off">Always Hide</option></select></div>
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--sec);margin-bottom:6px;">Music</label><select id="set-music" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);font-family:inherit;"><option value="on">On</option><option value="off">Off</option></select></div>
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--sec);margin-bottom:6px;">View Distance</label><select id="set-view" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);font-family:inherit;"><option value="80">Far (80 units)</option><option value="60">Normal (60 units)</option><option value="40">Close (40 units)</option></select></div>
+  </div>
+  <button class="menu-btn primary" onclick="GAME.applySettings()">✓ Apply</button>
+  <button class="menu-btn" onclick="GAME.toMenu()">← Back</button>
+</div>
+
+<div id="scr-credits" class="screen">
+  <h2 style="font-size:32px;margin-bottom:24px;font-family:'Orbitron',sans-serif;">📜 CREDITS</h2>
+  <div style="text-align:center;line-height:2.4;color:var(--sec);font-size:15px;max-width:420px;">
+    <p style="font-size:22px;font-weight:800;color:var(--gold);font-family:'Orbitron',sans-serif;">معركة الطبيعة v4.0</p>
+    <p>Engine: Three.js r160</p><p>100+ Unique Characters with 3D Features</p><p>Open World with Frustum Culling</p><p>Story + Battle + Tournament</p><p>Dynamic LOD System</p><p>Original Soundtrack by Web Audio</p>
+    <p style="margin-top:20px;color:var(--dim);font-size:13px;">Created by <strong style="color:var(--gold)">Yahya</strong></p>
+    <p style="color:var(--dim);font-size:13px;">Special thanks to: <strong style="color:var(--gold)">Malek, Moaz, Helmy, Ahmed, Yassin, Maryam</strong></p>
+  </div>
+  <button class="menu-btn" onclick="GAME.toMenu()">← Back</button>
+</div>
+
+
+<script src="game.js"></script>
+</body>
+</html>
